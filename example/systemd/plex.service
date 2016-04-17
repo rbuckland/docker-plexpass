@@ -1,0 +1,22 @@
+[Unit]
+Description=Plex Media Server
+After=network.target docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill plex
+ExecStartPre=-/usr/bin/docker rm plex
+# ExecStartPre=/usr/bin/docker pull  rbuckland/plex
+ExecStart=/usr/bin/docker run \
+   --name plex \
+   --restart=always \
+   --net=host \
+   -v /srv/docker/plex/config:/config \
+   -v /path/to/your/media:/media \
+   -p 32400:32400 \
+   -e PLEX_USERNAME=username \
+   -e PLEX_PASSWORD=password \
+   rbuckland/plex
+
+[Install]
+WantedBy=multi-user.target
